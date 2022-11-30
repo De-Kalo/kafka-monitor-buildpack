@@ -10,7 +10,7 @@ echo $BUILDPACK_DIR
 
 
 mkdir $BUILDPACK_DIR/kafka-monitor
-LIB= $BUILDPACK_DIR/kafka-monitor
+LIB=$BUILDPACK_DIR/kafka-monitor
 cd $LIB
 # download the buildpack
 JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz}
