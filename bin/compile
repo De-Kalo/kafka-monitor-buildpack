@@ -43,7 +43,7 @@ echo '----->'
 more prod.truststore.pem
 keytool -importcert -file prod.truststore.pem -keystore prod.truststore.jks -deststorepass $TRUSTSTORE_PASSWORD -noprompt
 openssl pkcs12 -export -in prod.keystore.pem -out prod.keystore.pkcs12 -password pass:$KEYSTORE_PASSWORD 2>&1
-keytool -importkeystore -srcstoretype PKCS12 -destkeystore prod.keystore.jks -deststorepass $KAFKA_KEYSTORE_PASSWORD -srckeystore prod.keystore.pkcs12 -srcstorepass $KEYSTORE_PASSWORD 2>&1
+keytool -importkeystore -srcstoretype PKCS12 -destkeystore prod.keystore.jks -deststorepass $KEYSTORE_PASSWORD -srckeystore prod.keystore.pkcs12 -srcstorepass $KEYSTORE_PASSWORD 2>&1
 
 # Generate PKCS12 from cert.pem and key.pem
 #openssl pkcs12 -export -out cert.pkcs12 -in cert.pem -inkey key.pem -password pass:$KEYSTORE_PASSWORD
@@ -52,7 +52,7 @@ echo "security.protocol=SSL" >> prod.config.properties
 echo "ssl.endpoint.identification.algorithm=" >> prod.config.properties
 echo "ssl.truststore.type = JKS" >> prod.config.properties
 echo "ssl.truststore.location=$LIB/prod.truststore.jks" >> prod.config.properties
-echo "ssl.truststore.password=$KAFKA_KEYSTORE_PASSWORD" >> prod.config.properties
+echo "ssl.truststore.password=$TRUSTSTORE_PASSWORD" >> prod.config.properties
 echo "ssl.keystore.type = JKS" >> prod.config.properties
 echo "ssl.keystore.location=$LIB/prod.keystore.jks" >> prod.config.properties
-echo "ssl.keystore.password=$KAFKA_KEYSTORE_PASSWORD" >> prod.config.properties
+echo "ssl.keystore.password=$KEYSTORE_PASSWORD" >> prod.config.properties
