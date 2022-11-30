@@ -33,7 +33,7 @@ echo "$KAFKA_TRUSTED_CERT" > prod.truststore.pem
 
 # Set passwords
 KEYSTORE_PASSWORD=$KAFKA_KEYSTORE_PASSWORD
-TRUSTSTORE_PASSWORD=$KAFKA_TRUSTSTORE_PASSWORD
+TRUSTSTORE_PASSWORD=$KAFKA_KEYSTORE_PASSWORD
 echo '<---- files here'
 ls
 '----->'
@@ -48,7 +48,7 @@ echo "security.protocol=SSL" >> prod.config.properties
 echo "ssl.endpoint.identification.algorithm=" >> prod.config.properties
 echo "ssl.truststore.type = JKS" >> prod.config.properties
 echo "ssl.truststore.location=$LIB/prod.truststore.jks" >> prod.config.properties
-echo "ssl.truststore.password=$KAFKA_TRUSTSTORE_PASSWORD" >> prod.config.properties
+echo "ssl.truststore.password=$KAFKA_KEYSTORE_PASSWORD" >> prod.config.properties
 echo "ssl.keystore.type = JKS" >> prod.config.properties
 echo "ssl.keystore.location=$LIB/prod.keystore.jks" >> prod.config.properties
 echo "ssl.keystore.password=$KAFKA_KEYSTORE_PASSWORD" >> prod.config.properties
