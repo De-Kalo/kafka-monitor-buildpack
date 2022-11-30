@@ -24,7 +24,7 @@ cd $LIB
 wget https://downloads.apache.org/kafka/3.3.1/kafka_2.12-3.3.1.tgz -nv
 tar xzf kafka_2.12-3.3.1.tgz
 # mv kafka_2.12-3.3.1 $LIB
-export PATH="$LIB/kafka_2.12-3.3.1/bin:$PATH"
+
 
 
 # Write config vars to files.
@@ -43,11 +43,13 @@ keytool -importkeystore -srcstoretype PKCS12 -destkeystore prod.keystore.jks -de
 # Generate PKCS12 from cert.pem and key.pem
 #openssl pkcs12 -export -out cert.pkcs12 -in cert.pem -inkey key.pem -password pass:$KEYSTORE_PASSWORD
 
+LIB_AFTER=~/kafka-monitor
+export PATH="$LIB_AFTER/kafka_2.12-3.3.1/bin:$PATH"
 echo "security.protocol=SSL" >> prod.config.properties
 echo "ssl.endpoint.identification.algorithm=" >> prod.config.properties
 echo "ssl.truststore.type = JKS" >> prod.config.properties
-echo "ssl.truststore.location=$LIB/prod.truststore.jks" >> prod.config.properties
+echo "ssl.truststore.location=$LIB_AFTER/prod.truststore.jks" >> prod.config.properties
 echo "ssl.truststore.password=$TRUSTSTORE_PASSWORD" >> prod.config.properties
 echo "ssl.keystore.type = JKS" >> prod.config.properties
-echo "ssl.keystore.location=$LIB/prod.keystore.jks" >> prod.config.properties
+echo "ssl.keystore.location=$LIB_AFTER/prod.keystore.jks" >> prod.config.properties
 echo "ssl.keystore.password=$KEYSTORE_PASSWORD" >> prod.config.properties
