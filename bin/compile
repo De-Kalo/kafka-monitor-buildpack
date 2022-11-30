@@ -4,6 +4,7 @@ set -e
 set -o pipefail
 set -x
 BUILD_DIR="$1"
+ENV_DIR="$3"
 BUILDPACK_DIR=$(cd "$(dirname "$0")"; cd ..; pwd)
 echo $BUILDPACK_DIR
 
@@ -25,15 +26,17 @@ tar xzf kafka_2.12-3.3.1.tgz
 # mv kafka_2.12-3.3.1 $LIB
 export PATH="$LIB/kafka_2.12-3.3.1/bin:$PATH"
 
-echo $KAFKA_CLIENT_CERT_KEY
+
 # Write config vars to files.
-echo "$KAFKA_CLIENT_CERT_KEY" >> prod.keystore.pem
-echo "$KAFKA_CLIENT_CERT" >> prod.keystore.pem
-echo "$KAFKA_TRUSTED_CERT" > prod.truststore.pem
+cat "$ENV_DIR/KAFKA_CLIENT_CERT_KEY" >> prod.keystore.pem
+cat "$ENV_DIR/KAFKA_CLIENT_CERT" >> prod.keystore.pem
+cat "$ENV_DIR/KAFKA_TRUSTED_CERT" > prod.truststore.pem
 
 # Set passwords
-KEYSTORE_PASSWORD=$KAFKA_KEYSTORE_PASSWORD
-TRUSTSTORE_PASSWORD=$KAFKA_KEYSTORE_PASSWORD
+cat "$ENV_DIR/KEYSTORE_PASSWORD" >> prod.keystore.pem
+cat "$ENV_DIR/TRUSTSTORE_PASSWORD" >> prod.keystore.pem
+# KEYSTORE_PASSWORD=$KAFKA_KEYSTORE_PASSWORD
+# TRUSTSTORE_PASSWORD=$KAFKA_KEYSTORE_PASSWORD
 echo '<---- files here'
 more prod.keystore.pem
 echo '----->'
