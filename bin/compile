@@ -9,7 +9,7 @@ BUILDPACK_DIR=$(cd "$(dirname "$0")"; cd ..; pwd)
 echo $BUILDPACK_DIR
 LIB="$(pwd)/kafka-monitor"
 
-mkdir -p $LIB
+mkdir $LIB
 
 cd $LIB
 # download the buildpack
