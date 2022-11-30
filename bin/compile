@@ -12,15 +12,15 @@ LIB="$BUILD_DIR/kafka-monitor" #"$(pwd)/kafka-monitor"
 mkdir $LIB
 
 cd $LIB
-# download the buildpack
-JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz}
-mkdir -p /tmp/jvm-common
-curl --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
-. /tmp/jvm-common/bin/util
-. /tmp/jvm-common/bin/java
+# # download the buildpack
+# JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz}
+# mkdir -p $LIB/tmp/jvm-common
+# curl --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C $LIB/tmp/jvm-common --strip-components=1
+# . $LIB/tmp/jvm-common/bin/util
+# . $LIB/tmp/jvm-common/bin/java
 
-# install JDK
-install_java_with_overlay $LIB
+# # install JDK
+# install_java_with_overlay $LIB
 wget https://downloads.apache.org/kafka/3.3.1/kafka_2.12-3.3.1.tgz -nv
 tar xzf kafka_2.12-3.3.1.tgz
 # mv kafka_2.12-3.3.1 $LIB
