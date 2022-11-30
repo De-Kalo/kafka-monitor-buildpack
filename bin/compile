@@ -22,7 +22,7 @@ curl --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --st
 install_java_with_overlay $LIB
 wget https://downloads.apache.org/kafka/3.3.1/kafka_2.12-3.3.1.tgz
 tar xzf kafka_2.12-3.3.1.tgz
-mv kafka_2.12-3.3.1 $LIB
+# mv kafka_2.12-3.3.1 $LIB
 export PATH="$LIB/kafka_2.12-3.3.1/bin:$PATH"
 
 # Write config vars to files.
