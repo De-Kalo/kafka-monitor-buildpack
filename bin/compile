@@ -7,7 +7,7 @@ BUILD_DIR="$1"
 ENV_DIR="$3"
 BUILDPACK_DIR=$(cd "$(dirname "$0")"; cd ..; pwd)
 echo $BUILDPACK_DIR
-LIB=$BUILD_DIR #"$(pwd)/kafka-monitor"
+LIB="$BUILD_DIR/kafka-monitor" #"$(pwd)/kafka-monitor"
 
 mkdir $LIB
 
