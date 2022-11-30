@@ -7,10 +7,10 @@ BUILD_DIR="$1"
 ENV_DIR="$3"
 BUILDPACK_DIR=$(cd "$(dirname "$0")"; cd ..; pwd)
 echo $BUILDPACK_DIR
+LIB="$(pwd)/kafka-monitor"
 
+mkdir -p $DEFAULT_DIR_ENCHANT_DICTS
 
-mkdir ~/kafka-monitor
-LIB=~/kafka-monitor
 cd $LIB
 # download the buildpack
 JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz}
