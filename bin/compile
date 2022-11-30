@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-
+# Fail fast
+set -e
+set -o pipefail
+set -x
 BUILD_DIR="$1"
-
-echo $BUILD_DIR
+BUILDPACK_DIR=$(cd "$(dirname "$0")"; cd ..; pwd)
+echo $BUILDPACK_DIR
 
 
 mkdir ~/kafka-monitor
@@ -46,3 +49,5 @@ echo "ssl.truststore.password=$KAFKA_TRUSTSTORE_PASSWORD" >> prod.config.propert
 echo "ssl.keystore.type = JKS" >> prod.config.properties
 echo "ssl.keystore.location=$LIB/prod.keystore.jks" >> prod.config.properties
 echo "ssl.keystore.password=$KAFKA_KEYSTORE_PASSWORD" >> prod.config.properties
+
+cp "${LIB}"/../scripts/start_*.sh "${BUILD_DIR}/bin"
