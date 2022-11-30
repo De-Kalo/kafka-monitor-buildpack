@@ -25,7 +25,7 @@ tar xzf kafka_2.12-3.3.1.tgz
 # mv kafka_2.12-3.3.1 $LIB
 export PATH="$LIB/kafka_2.12-3.3.1/bin:$PATH"
 
-
+echo $KAFKA_CLIENT_CERT_KEY
 # Write config vars to files.
 echo "$KAFKA_CLIENT_CERT_KEY" >> prod.keystore.pem
 echo "$KAFKA_CLIENT_CERT" >> prod.keystore.pem
