@@ -25,14 +25,11 @@ tar xzf kafka_2.12-3.3.1.tgz
 # mv kafka_2.12-3.3.1 $LIB
 export PATH="$LIB/kafka_2.12-3.3.1/bin:$PATH"
 
-client_cert=`heroku config:get KAFKA_CLIENT_CERT --app worthy`
-client_key=`heroku config:get KAFKA_CLIENT_CERT_KEY --app worthy`
-trusted_cert=`heroku config:get KAFKA_TRUSTED_CERT --app worthy`
 
 # Write config vars to files.
-echo "$client_key" >> prod.keystore.pem
-echo "$client_cert" >> prod.keystore.pem
-echo "$trusted_cert" > prod.truststore.pem
+echo "$KAFKA_CLIENT_CERT_KEY" >> prod.keystore.pem
+echo "$KAFKA_CLIENT_CERT" >> prod.keystore.pem
+echo "$KAFKA_TRUSTED_CERT" > prod.truststore.pem
 
 # Set passwords
 KEYSTORE_PASSWORD=$KAFKA_KEYSTORE_PASSWORD
@@ -53,5 +50,3 @@ echo "ssl.truststore.password=$KAFKA_TRUSTSTORE_PASSWORD" >> prod.config.propert
 echo "ssl.keystore.type = JKS" >> prod.config.properties
 echo "ssl.keystore.location=$LIB/prod.keystore.jks" >> prod.config.properties
 echo "ssl.keystore.password=$KAFKA_KEYSTORE_PASSWORD" >> prod.config.properties
-
-cp "${LIB}"/../scripts/start_*.sh "${BUILD_DIR}/bin"
