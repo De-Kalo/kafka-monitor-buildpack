@@ -34,7 +34,9 @@ echo "$KAFKA_TRUSTED_CERT" > prod.truststore.pem
 # Set passwords
 KEYSTORE_PASSWORD=$KAFKA_KEYSTORE_PASSWORD
 TRUSTSTORE_PASSWORD=$KAFKA_TRUSTSTORE_PASSWORD
-
+echo '<---- files here'
+ls
+'----->'
 keytool -importcert -file prod.truststore.pem -keystore prod.truststore.jks -deststorepass $TRUSTSTORE_PASSWORD -noprompt
 openssl pkcs12 -export -in prod.keystore.pem -out prod.keystore.pkcs12 -password pass:$KEYSTORE_PASSWORD 2>&1
 keytool -importkeystore -srcstoretype PKCS12 -destkeystore prod.keystore.jks -deststorepass $KAFKA_KEYSTORE_PASSWORD -srckeystore prod.keystore.pkcs12 -srcstorepass $KEYSTORE_PASSWORD 2>&1
