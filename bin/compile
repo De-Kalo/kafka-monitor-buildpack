@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+BP_DIR="$(cd $(dirname "$0"); pwd)"
+BUILD_DIR="$1"
+
+mkdir -p "$≈/bin"
+
+
+# download the buildpack
+JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz}
+mkdir -p /tmp/jvm-common
+curl --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
+. /tmp/jvm-common/bin/util
+. /tmp/jvm-common/bin/java
+
+# install JDK
+install_java_with_overlay ${BUILD_DIR}
+wget https://downloads.apache.org/kafka/3.3.1/kafka_2.12-3.3.1.tgz
+tar xzf kafka_2.12-3.3.1.tgz
+mv kafka_2.12-3.3.1 ~
+export PATH="/app/kafka_2.12-3.3.1/bin:$PATH"
+
+
+
+# Fetch certs and key from config variable
+client_cert=`heroku config:get KAFKA_CLIENT_CERT --app worthy`
+client_key=`heroku config:get KAFKA_CLIENT_CERT_KEY --app worthy`
+trusted_cert=`heroku config:get KAFKA_TRUSTED_CERT --app worthy`
+
+# Write config vars to files.
+echo "$client_key" >> prod.keystore.pem
+echo "$client_cert" >> prod.keystore.pem
+echo "$trusted_cert" > prod.truststore.pem
+
+# Set passwords
+KEYSTORE_PASSWORD=$KAFKA_KEYSTORE_PASSWORD
+TRUSTSTORE_PASSWORD=$KAFKA_TRUSTSTORE_PASSWORD
+
+keytool -importcert -file prod.truststore.pem -keystore prod.truststore.jks -deststorepass $TRUSTSTORE_PASSWORD -noprompt
+openssl pkcs12 -export -in prod.keystore.pem -out prod.keystore.pkcs12 -password pass:$KEYSTORE_PASSWORD 2>&1
+keytool -importkeystore -srcstoretype PKCS12 -destkeystore prod.keystore.jks -deststorepass $KAFKA_KEYSTORE_PASSWORD -srckeystore prod.keystore.pkcs12 -srcstorepass $KEYSTORE_PASSWORD 2>&1
+
+# Generate PKCS12 from cert.pem and key.pem
+#openssl pkcs12 -export -out cert.pkcs12 -in cert.pem -inkey key.pem -password pass:$KEYSTORE_PASSWORD
+
+echo "security.protocol=SSL" >> prod.config.properties
+echo "ssl.endpoint.identification.algorithm=" >> prod.config.properties
+echo "ssl.truststore.type = JKS" >> prod.config.properties
+echo "ssl.truststore.location=$BUILD_DIR/prod.truststore.jks" >> prod.config.properties
+echo "ssl.truststore.password=$KAFKA_TRUSTSTORE_PASSWORD" >> prod.config.properties
+echo "ssl.keystore.type = JKS" >> prod.config.properties
+echo "ssl.keystore.location=$BUILD_DIR/prod.keystore.jks" >> prod.config.properties
+echo "ssl.keystore.password=$KAFKA_KEYSTORE_PASSWORD" >> prod.config.properties
+
+
+# heroku plugins:install heroku-kafka && heroku kafka:consumer-groups -a worthy
+#kafka-consumer-groups.sh  --bootstrap-server $KAFKA_URL --timeout 30000 --describe --group "${KAFKA_PREFIX}worthy-buyers-production" --command-config /app/prod.config.properties 
+
+
+
+# # 
+
+# echo "downloading oauth2-proxy..."
+# wget --no-verbose "https://github.com/oauth2-proxy/oauth2-proxy/releases/download/${OAUTH2_PROXY_VERSION}/oauth2-proxy-${OAUTH2_PROXY_VERSION}.linux-amd64.tar.gz" -O oauth2-proxy.tar.gz
+# echo "$OAUTH2_PROXY_CHECKSUM  oauth2-proxy.tar.gz" | sha256sum -c -
+# tar -xzf oauth2-proxy.tar.gz -C "$BUILD_DIR/bin" --strip-components=1
+# rm oauth2-proxy.tar.gz
+
+# # write out a start script
+# cp "${BP_DIR}"/../scripts/start_*.sh "${BUILD_DIR}/bin"
