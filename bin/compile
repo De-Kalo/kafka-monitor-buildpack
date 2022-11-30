@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
-
-BP_DIR="$(cd $(dirname "$0"); pwd)"
 BUILD_DIR="$1"
 
-mkdir -p "$≈/bin"
 
 
 # download the buildpack
