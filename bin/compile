@@ -4,10 +4,10 @@ BUILD_DIR="$1"
 
 echo $BUILD_DIR
 
-cd ~
-mkdir kakfa-monitor
-LIB=~/kakfa-monitor
 
+mkdir ~/kafka-monitor
+LIB=~/kafka-monitor
+cd $LIB
 # download the buildpack
 JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/jvm-common.tgz}
 mkdir -p /tmp/jvm-common
@@ -16,10 +16,10 @@ curl --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --st
 . /tmp/jvm-common/bin/java
 
 # install JDK
-install_java_with_overlay ~/kakfa-monitor
+install_java_with_overlay $LIB
 wget https://downloads.apache.org/kafka/3.3.1/kafka_2.12-3.3.1.tgz
 tar xzf kafka_2.12-3.3.1.tgz
-mv kafka_2.12-3.3.1 ~
+mv kafka_2.12-3.3.1 $LIB
 export PATH="$LIB/kafka_2.12-3.3.1/bin:$PATH"
 
 # Write config vars to files.
@@ -41,8 +41,8 @@ keytool -importkeystore -srcstoretype PKCS12 -destkeystore prod.keystore.jks -de
 echo "security.protocol=SSL" >> prod.config.properties
 echo "ssl.endpoint.identification.algorithm=" >> prod.config.properties
 echo "ssl.truststore.type = JKS" >> prod.config.properties
-echo "ssl.truststore.location=$BUILD_DIR/prod.truststore.jks" >> prod.config.properties
+echo "ssl.truststore.location=$LIB/prod.truststore.jks" >> prod.config.properties
 echo "ssl.truststore.password=$KAFKA_TRUSTSTORE_PASSWORD" >> prod.config.properties
 echo "ssl.keystore.type = JKS" >> prod.config.properties
-echo "ssl.keystore.location=$BUILD_DIR/prod.keystore.jks" >> prod.config.properties
+echo "ssl.keystore.location=$LIB/prod.keystore.jks" >> prod.config.properties
 echo "ssl.keystore.password=$KAFKA_KEYSTORE_PASSWORD" >> prod.config.properties
